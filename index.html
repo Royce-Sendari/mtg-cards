@@ -45,8 +45,16 @@
     <script>
         let allCards = []; // Store fetched cards globally
 
-        async function fetchCard(name, set) {
-            let response = await fetch(`https://api.scryfall.com/cards/named?exact=${encodeURIComponent(name)}&set=${set}`);
+        async function fetchCard(card) {
+            let url;
+
+            if (card.search === "id" && card.id) {
+                url = `https://api.scryfall.com/cards/${card.id}`;
+            } else {
+                url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(card.name)}&set=${card.set}`
+            }
+
+            let response = await fetch(url);
             return response.ok ? response.json() : null;
         }
 
@@ -59,7 +67,7 @@
             allCards = []; // Reset global array
 
             for (let card of cards) {
-                let data = await fetchCard(card.name, card.set);
+                let data = await fetchCard(card);
                 if (data) {
                     let priceEur = data.prices.eur ? parseFloat(data.prices.eur).toFixed(2) : "N/A";
                     let priceEurX4 = data.prices.eur ? (parseFloat(data.prices.eur) * 4).toFixed(2) : "N/A";

@@ -1,6 +1,17 @@
 [
-    { "name": "Terror of the Peaks", "set": "OTJ" },
-    { "name": "Bonehoard Dracosaur", "set": "LCI" },
-    { "name": "Breach the Multiverse", "set": "MOM" },
-    { "name": "Archangel of Tithes", "set": "OTJ" }
+    { "name": "Terror of the Peaks", "set": "OTJ", "search": "name"},
+    { "name": "Bonehoard Dracosaur", "set": "LCI", "search": "name" },
+    { "name": "Breach the Multiverse", "set": "MOM", "search": "name" },
+    { "name": "Archangel of Tithes", "set": "OTJ", "search": "name" },
+    { "name": "Sram, Senior Edificer", "set": "MUL", "search": "name" },
+    { "name": "Valley Questcaller", "set": "BLB", "search": "name" },
+    { "name": "Emberheart Challenger", "set": "BLB", "search": "name" },
+    { "name": "Lizard Blades", "set": "NEO", "search": "name" },
+    { "name": "Pawpatch Recruit", "set": "BLB", "search": "name" },
+    { "name": "Ugin's Binding", "set": "MH3", "search": "name" },
+    { "name": "Sapphire Medallion", "set": "MH3", "search": "name" },
+    { "name": "Palantir of Orthanc", "set": "LTR", "search": "id", "id": "4c27c6ac-889f-4591-8789-4a6f1a264d98" },
+    { "name": "Contagion Engine", "set": "OTP", "search": "name" },
+    { "name": "Lunar Convocation", "set": "BLB", "search": "name" },
+    { "name": "Surly Badgersaur", "set": "C20", "search": "name" }
 ]

@@ -7,6 +7,7 @@
     <style>
         .card { display: inline-block; margin: 10px; text-align: center; }
         img { width: 200px; }
+        .card p { margin: 2px 0; }
     </style>
 </head>
 <body>
@@ -27,12 +28,16 @@
             for (let card of cards) {
                 let data = await fetchCard(card.name, card.set);
                 if (data) {
+
+                    let priceEur = data.prices.eur ? parseFloat(data.prices.eur).toFixed(2) : "N/A";
+                    let priceEurX4 = data.prices.eur ? (parseFloat(data.prices.eur) * 4).toFixed(2) : "N/A";
+
                     let cardElement = document.createElement("div");
                     cardElement.className = "card";
                     cardElement.innerHTML = `
                         <img src="${data.image_uris?.normal || ''}" alt="${card.name}">
                         <p>${card.name} (${data.set_name})</p>
-                        <p>Price: $${data.prices.usd || "N/A"}</p>
+                        <p>Price: €${priceEur} (PT x 4: ${priceEurX4} PLN)</p>
                     `;
                     container.appendChild(cardElement);
                 }

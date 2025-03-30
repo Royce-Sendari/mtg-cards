@@ -1,7 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My MTG Collection</title>
+    <style>
+        .card { display: inline-block; margin: 10px; text-align: center; }
+        img { width: 200px; }
+    </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <h1>My MTG Collection</h1>
+    <div id="card-container"></div>
+
+    <script>
+        async function fetchCard(name, set) {
+            let response = await fetch(`https://api.scryfall.com/cards/named?exact=${encodeURIComponent(name)}&set=${set}`);
+            return response.ok ? response.json() : null;
+        }
+
+        async function loadCards() {
+            let container = document.getElementById("card-container");
+            let response = await fetch("cards.json");
+            let cards = await response.json();
+
+            for (let card of cards) {
+                let data = await fetchCard(card.name, card.set);
+                if (data) {
+                    let cardElement = document.createElement("div");
+                    cardElement.className = "card";
+                    cardElement.innerHTML = `
+                        <img src="${data.image_uris?.normal || ''}" alt="${card.name}">
+                        <p>${card.name} (${data.set_name})</p>
+                        <p>Price: $${data.prices.usd || "N/A"}</p>
+                    `;
+                    container.appendChild(cardElement);
+                }
+            }
+        }
+        loadCards();
+    </script>
 </body>
 </html>

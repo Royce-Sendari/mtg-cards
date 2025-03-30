@@ -66,10 +66,11 @@
 
                     allCards.push({
                         name: card.name,
-                        set: data.set_name,
+                        set: data.set.toUpperCase(),
                         price: priceEur === "N/A" ? 0 : parseFloat(priceEur),
                         image: data.image_uris?.normal || "",
-                        displayPrice: `Price: €${priceEur} (PT x 4: €${priceEurX4} PLN)`
+                        displayPriceEUR: `Price: ${priceEur} EUR`,
+                        displayPricePLN: `PT x 4: ${priceEurX4} PLN`
                     });
                 }
             }
@@ -98,7 +99,8 @@
                 cardElement.innerHTML = `
                     <img src="${card.image}" alt="${card.name}">
                     <p><strong>${card.name}</strong> (${card.set})</p>
-                    <p>${card.displayPrice}</p>
+                    <p>${card.displayPriceEUR}</p>
+                    <p>${card.displayPricePLN}</p>
                 `;
                 container.appendChild(cardElement);
             });

@@ -5,16 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My MTG Collection</title>
     <style>
-        .card { display: inline-block; margin: 10px; text-align: center; }
-        img { width: 200px; }
-        .card p { margin: 2px 0; }
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #controls { margin-bottom: 15px; }
+        #search { padding: 5px; width: 200px; }
+        #sort { padding: 5px; }
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 15px; 
+            padding: 10px; 
+            justify-items: center;
+        }
+        .card { 
+            background: #f8f8f8; 
+            padding: 10px; 
+            border-radius: 8px; 
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1); 
+            text-align: center;
+        }
+        img { width: 200px; border-radius: 5px; }
+        .card p { margin: 5px 0; }
     </style>
 </head>
 <body>
     <h1>My MTG Collection</h1>
-    <div id="card-container"></div>
+
+    <!-- Controls for search and sorting -->
+    <div id="controls">
+        <input type="text" id="search" placeholder="Search for a card...">
+        <select id="sort">
+            <option value="name">Sort by Name</option>
+            <option value="price">Sort by Price (€)</option>
+        </select>
+    </div>
+
+    <!-- Grid container for cards -->
+    <div id="card-container" class="grid-container"></div>
 
     <script>
+        let allCards = []; // Store fetched cards globally
+
         async function fetchCard(name, set) {
             let response = await fetch(`https://api.scryfall.com/cards/named?exact=${encodeURIComponent(name)}&set=${set}`);
             return response.ok ? response.json() : null;
@@ -22,27 +52,62 @@
 
         async function loadCards() {
             let container = document.getElementById("card-container");
+            container.innerHTML = ""; // Clear existing cards
             let response = await fetch("cards.json");
             let cards = await response.json();
+
+            allCards = []; // Reset global array
 
             for (let card of cards) {
                 let data = await fetchCard(card.name, card.set);
                 if (data) {
-
                     let priceEur = data.prices.eur ? parseFloat(data.prices.eur).toFixed(2) : "N/A";
                     let priceEurX4 = data.prices.eur ? (parseFloat(data.prices.eur) * 4).toFixed(2) : "N/A";
 
-                    let cardElement = document.createElement("div");
-                    cardElement.className = "card";
-                    cardElement.innerHTML = `
-                        <img src="${data.image_uris?.normal || ''}" alt="${card.name}">
-                        <p>${card.name} (${data.set_name})</p>
-                        <p>Price: €${priceEur} (PT x 4: ${priceEurX4} PLN)</p>
-                    `;
-                    container.appendChild(cardElement);
+                    allCards.push({
+                        name: card.name,
+                        set: data.set_name,
+                        price: priceEur === "N/A" ? 0 : parseFloat(priceEur),
+                        image: data.image_uris?.normal || "",
+                        displayPrice: `Price: €${priceEur} (PT x 4: €${priceEurX4} PLN)`
+                    });
                 }
             }
+            displayCards();
         }
+
+        function displayCards() {
+            let container = document.getElementById("card-container");
+            let searchTerm = document.getElementById("search").value.toLowerCase();
+            let sortOption = document.getElementById("sort").value;
+
+            let filteredCards = allCards.filter(card => 
+                card.name.toLowerCase().includes(searchTerm)
+            );
+
+            if (sortOption === "name") {
+                filteredCards.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortOption === "price") {
+                filteredCards.sort((a, b) => b.price - a.price); // Sort by highest price
+            }
+
+            container.innerHTML = ""; // Clear the container before adding new cards
+            filteredCards.forEach(card => {
+                let cardElement = document.createElement("div");
+                cardElement.className = "card";
+                cardElement.innerHTML = `
+                    <img src="${card.image}" alt="${card.name}">
+                    <p><strong>${card.name}</strong> (${card.set})</p>
+                    <p>${card.displayPrice}</p>
+                `;
+                container.appendChild(cardElement);
+            });
+        }
+
+        // Event listeners for search and sorting
+        document.getElementById("search").addEventListener("input", displayCards);
+        document.getElementById("sort").addEventListener("change", displayCards);
+
         loadCards();
     </script>
 </body>

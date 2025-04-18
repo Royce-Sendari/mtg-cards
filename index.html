@@ -69,8 +69,10 @@
             for (let card of cards) {
                 let data = await fetchCard(card);
                 if (data) {
-                    let priceEur = data.prices.eur ? parseFloat(data.prices.eur).toFixed(2) : "N/A";
-                    let priceEurX4 = data.prices.eur ? (parseFloat(data.prices.eur) * 4).toFixed(2) : "N/A";
+                    let priceEur = data.prices.eur ? parseFloat(data.prices.eur).toFixed(2) 
+                                    : (card.manual_price ? parseFloat(card.manual_price / 4).toFixed(2) : "N/A");
+                    let priceEurX4 = data.prices.eur ? (parseFloat(data.prices.eur) * 4).toFixed(2) 
+                                    : (card.manual_price ? parseFloat(card.manual_price).toFixed(2) : "N/A");
 
                     allCards.push({
                         name: card.name,
